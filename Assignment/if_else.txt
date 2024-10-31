@@ -1,0 +1,35 @@
+        AREA RESET, CODE, READONLY         ; Define a code area for the reset vector table
+        EXPORT __Vectors                   ; Export vector table for linking
+        EXPORT Reset_Handler               ; Export reset handler
+
+__Vectors
+        DCD __initial_sp                   ; Initial stack pointer location
+        DCD Reset_Handler                  ; Reset Handler
+
+__initial_sp  EQU 0x20002000               ; Set initial stack pointer (adjust based on your memory map)
+
+Reset_Handler
+        LDR R0, =__initial_sp              ; Set the initial stack pointer
+        MOV SP, R0
+
+        BL main                            ; Call main function
+        B .                                ; Infinite loop if main returns
+
+main
+        LDR R0, =10                        ; Load 10 into R0
+        LDR R1, =20                        ; Load 20 into R1
+
+        CMP R0, R1                         ; Compare R0 with R1
+        BGT greater_than                   ; Branch to 'greater_than' if R0 > R1
+
+        ; Else (R0 <= R1)
+        MOV R2, #0                         ; Set R2 to 0
+        B end_if                           ; Skip the 'if' block and jump to end_if
+
+greater_than
+        MOV R2, #1                         ; Set R2 to 1 if R0 > R1
+
+end_if
+        B end_if                           ; Infinite loop to end program
+
+        END                                ; End of program
